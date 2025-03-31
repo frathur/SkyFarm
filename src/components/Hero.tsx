@@ -1,7 +1,6 @@
-
+import { useEffect, useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronDown } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
@@ -9,35 +8,38 @@ const Hero = () => {
   const [scroll, setScroll] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [currentSlide, setCurrentSlide] = useState(0);
-  const heroRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setScroll(scrollTop);
-    };
+  const heroRef = useRef(null);
 
-    const handleMouseMove = (e: MouseEvent) => {
+  // Define background images for the hero slider
+  const backgroundImages = [
+    '/src/images/field1.jpg', // Replace with your actual image paths
+    '/src/images/field5.jpg',
+    '/src/images/field6.jpg'
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => setScroll(window.scrollY);
+    const handleMouseMove = (e) => {
       if (!heroRef.current) return;
-      
       const { clientX, clientY } = e;
       const { left, top, width, height } = heroRef.current.getBoundingClientRect();
-      
-      // Calculate mouse position relative to the hero section
-      const x = (clientX - left) / width;
-      const y = (clientY - top) / height;
-      
-      setMousePosition({ x, y });
+      setMousePosition({ x: (clientX - left) / width, y: (clientY - top) / height });
     };
-
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("mousemove", handleMouseMove);
-    
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  // Auto-slide: change slide every 5 seconds
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % backgroundImages.length);
+    }, 5000);
+    return () => clearInterval(intervalId);
+  }, [backgroundImages.length]);
 
   const featuresData = [
     {
@@ -57,7 +59,7 @@ const Hero = () => {
     }
   ];
 
-  const handleSlideChange = (value: number[]) => {
+  const handleSlideChange = (value) => {
     setCurrentSlide(value[0]);
   };
 
@@ -66,97 +68,56 @@ const Hero = () => {
       id="home" 
       ref={heroRef}
       className="relative h-screen flex items-center justify-center overflow-hidden"
+      style={{
+        backgroundImage: `url(${backgroundImages[currentSlide]})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        transition: 'background-image 0.5s ease-in-out, transform 0.5s ease-in-out',
+        // Apply a subtle horizontal shift for a parallax effect based on current slide
+        // transform: `translateX(${currentSlide * -20}px)`
+      }}
     >
-      {/* Dynamic background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Gradient overlay */}
-        <div className="video-overlay absolute inset-0 bg-gradient-to-r from-black/80 to-black/60 z-10"></div>
-        
-        {/* Animated background patterns */}
-        <div className="absolute inset-0 z-0">
-          {/* Moving gradient background with parallax effect */}
-          <div 
-            className="absolute inset-0 bg-gradient-to-br from-skyfarm-blue-dark/30 via-skyfarm-green-dark/20 to-skyfarm-earth/30"
-            style={{ 
-              transform: `translateY(${scroll * 0.2}px)`,
-              opacity: 1 - scroll / 1000
-            }}
-          ></div>
-          
-          {/* Animated floating elements */}
-          <div className="absolute inset-0">
-            {/* Glowing orbs with parallax effect */}
-            {Array(8).fill(0).map((_, i) => (
-              <div 
-                key={i} 
-                className="absolute rounded-full bg-gradient-to-r from-skyfarm-green-light/30 to-skyfarm-blue/20 blur-xl animate-pulse-glow"
-                style={{
-                  width: `${Math.random() * 200 + 100}px`,
-                  height: `${Math.random() * 200 + 100}px`,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  transform: `translate(${(mousePosition.x - 0.5) * -20 * (i % 4 + 1)}px, ${(mousePosition.y - 0.5) * -20 * (i % 3 + 1)}px)`,
-                  animationDuration: `${Math.random() * 8 + 8}s`,
-                  animationDelay: `${Math.random() * 5}s`,
-                  opacity: 0.4 - (i % 3) * 0.1,
-                }}
-              ></div>
-            ))}
-            
-            {/* Digital network lines */}
-            <div className="absolute inset-0">
-              <svg className="w-full h-full opacity-20" viewBox="0 0 100 100" preserveAspectRatio="none">
-                {Array(10).fill(0).map((_, i) => (
-                  <line 
-                    key={i} 
-                    x1={Math.random() * 100} 
-                    y1={Math.random() * 100} 
-                    x2={Math.random() * 100} 
-                    y2={Math.random() * 100}
-                    className="stroke-white/30"
-                    strokeWidth="0.1"
-                    style={{
-                      transform: `translate(${(mousePosition.x - 0.5) * -5}px, ${(mousePosition.y - 0.5) * -5}px)`,
-                    }}
-                  />
-                ))}
-              </svg>
-            </div>
-          </div>
-          
-          {/* Grid pattern with parallax effect */}
-          <div 
-            className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMxLjIyOSAwIDIuMjMuOTk1IDIuMjMgMi4yMjJhMi4yMjUgMi4yMjUgMCAwIDEtMi4yMyAyLjIyMkgyNGMtMS4yMjkgMC0yLjIzLS45OTUtMi4yMy0yLjIyMkEyLjIyNSAyLjIyNSAwIDAgMSAyNCAxOGgxMnptLjAwMSAyNGMxLjIyOCAwIDIuMjI5Ljk5NSAyLjIyOSAyLjIyMmEyLjIyNSAyLjIyNSAwIDAgMS0yLjIyOSAyLjIyMkgyNC4wMDFhMi4yMjUgMi4yMjUgMCAwIDEtMi4yMjktMi4yMjJjMC0xLjIyNyAxLjAwMS0yLjIyMiAyLjIyOS0yLjIyMmgxMnpNNDIgMjRjMS4yMjcgMCAyLjIyMi45OTUgMi4yMjIgMi4yMjIgMCAxLjIyNy0uOTk1IDIuMjIyLTIuMjIyIDIuMjIyaC0yNGMtMS4yMjcgMC0yLjIyMi0uOTk1LTIuMjIyLTIuMjIyQzE1Ljc3OCAyNC45OTUgMTYuNzczIDI0IDE4IDI0aDI0eiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIi8+PC9nPjwvc3ZnPg==')]"
-            style={{
-              transform: `translate(${(mousePosition.x - 0.5) * -10}px, ${(mousePosition.y - 0.5) * -10 + scroll * 0.1}px)`,
-              opacity: 0.4 - scroll / 2000
-            }}
-          ></div>
-        </div>
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/60 z-10"></div>
+
+      {/* Additional animated background patterns (optional) */}
+      <div className="absolute inset-0 z-0">
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-skyfarm-blue-dark/30 via-skyfarm-green-dark/20 to-skyfarm-earth/30"
+          style={{ 
+            transform: `translateY(${scroll * 0.2}px)`,
+            opacity: 1 - scroll / 1000
+          }}
+        ></div>
       </div>
 
-      {/* Main content with enhanced animations */}
+      {/* Main content with hero slider */}
       <div 
-        className="container mx-auto px-4 md:px-6 relative z-10"
+        className="container mx-auto px-4 md:px-6 relative z-20"
         style={{ 
           transform: `translateY(${-scroll * 0.4}px)`,
           opacity: 1 - scroll / 600
         }}
       >
         <div className="max-w-5xl mx-auto">
-          {/* Hero Content Carousel */}
           <Carousel className="w-full">
             <CarouselContent>
               {featuresData.map((feature, index) => (
                 <CarouselItem key={index}>
                   <div className="text-center space-y-6 p-4">
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-0 text-white animate-fade-in [text-shadow:_0_2px_8px_rgb(0_0_0_/_60%)]">
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-0 text-white animate-fade-in [text-shadow:_0_2px_8px_rgba(0,0,0,0.6)]">
                       {feature.title}
                     </h1>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-gradient-to-r from-skyfarm-green-light to-skyfarm-green animate-fade-in [text-shadow:_0_1px_5px_rgb(0_0_0_/_40%)]" style={{ animationDelay: "0.3s" }}>
+                    <h2 
+                      className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-skyfarm-green-light to-skyfarm-green animate-fade-in [text-shadow:_0_1px_5px_rgba(0,0,0,0.4)]" 
+                      style={{ animationDelay: "0.3s" }}
+                    >
                       {feature.highlight}
                     </h2>
-                    <p className="text-xl md:text-2xl mb-8 text-white/90 animate-fade-in [text-shadow:_0_1px_3px_rgb(0_0_0_/_30%)] max-w-3xl mx-auto" style={{ animationDelay: "0.6s" }}>
+                    <p 
+                      className="text-xl md:text-2xl mb-8 text-white/90 animate-fade-in [text-shadow:_0_1px_3px_rgba(0,0,0,0.3)] max-w-3xl mx-auto" 
+                      style={{ animationDelay: "0.6s" }}
+                    >
                       {feature.description}
                     </p>
                   </div>
@@ -181,13 +142,13 @@ const Hero = () => {
           </Carousel>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in mt-8" style={{ animationDelay: "0.9s" }}>
-            <Button className="bg-skyfarm-green hover:bg-skyfarm-green-dark text-white px-8 py-6 text-lg group transition-all duration-300 hover:shadow-[0_0_15px_rgba(76,175,80,0.5)] transform hover:translate-y-[-2px]">
+            <Button className="bg-skyfarm-green hover:bg-skyfarm-green-dark text-white px-8 py-6 text-lg group transition-all duration-300 hover:shadow-lg transform hover:-translate-y-2">
               Learn More 
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
             </Button>
             <Button 
               variant="outline" 
-              className="bg-transparent border-white text-white hover:bg-white/10 px-8 py-6 text-lg backdrop-blur-sm hover:backdrop-blur-lg transition-all duration-300 transform hover:translate-y-[-2px]"
+              className="bg-transparent border-white text-white hover:bg-white/10 px-8 py-6 text-lg backdrop-blur-sm hover:backdrop-blur-lg transition-all duration-300 transform hover:-translate-y-2"
             >
               Contact Us
             </Button>
@@ -195,7 +156,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Enhanced scroll indicator with better animation */}
+      {/* Scroll Indicator */}
       <div 
         className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-20 transition-opacity duration-500"
         style={{ opacity: 1 - scroll / 200 }}

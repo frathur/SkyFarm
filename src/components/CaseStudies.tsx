@@ -41,7 +41,7 @@ const CaseStudies = () => {
     <section id="case-studies" className="section">
       <div className="container mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Case Studies & Success Stories</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Case Studies</h2>
           <div className="w-24 h-1 bg-skyfarm-blue mx-auto mb-6"></div>
           <p className="text-gray-700 max-w-3xl mx-auto">
             See how SkyFarm is making a real difference for farmers across Africa, with measurable 

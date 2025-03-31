@@ -1,5 +1,4 @@
-
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -10,6 +9,13 @@ const Footer = () => {
     "Resources": ["Blog", "Case Studies", "Knowledge Base", "FAQs"],
     "Support": ["Contact Us", "Technical Support", "Training", "Documentation"]
   };
+  
+  const socialIcons = [
+    { name: "Facebook", href: "#facebook", Icon: Facebook },
+    { name: "Twitter", href: "#twitter", Icon: Twitter },
+    { name: "Instagram", href: "#instagram", Icon: Instagram },
+    { name: "LinkedIn", href: "#linkedin", Icon: Linkedin }
+  ];
   
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8">
@@ -23,25 +29,14 @@ const Footer = () => {
               sustainable practices, and improved yields across Africa.
             </p>
             <div className="flex space-x-4">
-              {["facebook", "twitter", "instagram", "linkedin"].map((platform) => (
+              {socialIcons.map(({ name, href, Icon }) => (
                 <a
-                  key={platform}
-                  href={`#${platform}`}
+                  key={name}
+                  href={href}
                   className="bg-gray-800 hover:bg-skyfarm-green transition-colors p-2 rounded-full"
                 >
-                  <span className="sr-only">{platform}</span>
-                  <svg
-                    className="h-5 w-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <span className="sr-only">{name}</span>
+                  <Icon className="h-5 w-5" />
                 </a>
               ))}
             </div>

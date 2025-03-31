@@ -1,4 +1,3 @@
-
 import { Laptop, Layers, Database, Settings } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useInView } from "react-intersection-observer";
@@ -37,6 +36,39 @@ const Technology = () => {
     }
   ];
 
+  const architectureElements = [
+    {
+      name: "Drone Fleet",
+      image: "/src/images/dronefleet.jpg",
+      alt: "Agricultural drones flying over farmland"
+    },
+    {
+      name: "Sensor Suite",
+      image: "/src/images/sensor suit.jpg",
+      alt: "Agricultural sensors and monitoring devices"
+    },
+    {
+      name: "Data Transmission",
+      image: "/src/images/data transmission.jpg",
+      alt: "Wireless data transmission system"
+    },
+    {
+      name: "Cloud Processing",
+      image: "/src/images/cloud processing.jpg",
+      alt: "Cloud computing infrastructure"
+    },
+    {
+      name: "AI Analytics",
+      image: "/src/images/ai.jpg",
+      alt: "AI data analysis visualization"
+    },
+    {
+      name: "Mobile App",
+      image: "/src/images/mobileapp.jpg",
+      alt: "SkyFarm mobile application on a smartphone"
+    }
+  ];
+
   return (
     <section id="technology" className="section relative overflow-hidden bg-gradient-to-b from-white to-gray-50">
       {/* Background elements */}
@@ -72,17 +104,17 @@ const Technology = () => {
         >
           <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8">
             <h3 className="text-xl font-bold mb-8 text-center">System Architecture</h3>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-8 relative">
+            <div className="flex flex-wrap justify-center gap-8 md:gap-12 relative">
               {/* Connect lines between architecture elements */}
-              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 100" preserveAspectRatio="none">
-                <line x1="100" y1="50" x2="200" y2="50" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
-                <line x1="300" y1="50" x2="400" y2="50" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
-                <line x1="500" y1="50" x2="600" y2="50" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
-                <line x1="700" y1="50" x2="800" y2="50" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
+              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="none">
+                <line x1="100" y1="100" x2="200" y2="100" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
+                <line x1="300" y1="100" x2="400" y2="100" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
+                <line x1="500" y1="100" x2="600" y2="100" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
+                <line x1="700" y1="100" x2="800" y2="100" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
               </svg>
               
-              {/* Architecture elements with staggered animations */}
-              {["Drone Fleet", "Sensor Suite", "Data Transmission", "Cloud Processing", "AI Analytics", "Mobile App"].map((item, index) => (
+              {/* Architecture elements with staggered animations and LARGER images */}
+              {architectureElements.map((item, index) => (
                 <div 
                   key={index} 
                   className="flex flex-col items-center relative z-10"
@@ -92,10 +124,14 @@ const Technology = () => {
                     transition: `opacity 0.5s ease-out ${index * 0.15}s, transform 0.5s ease-out ${index * 0.15}s`
                   }}
                 >
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-r from-skyfarm-green to-skyfarm-blue flex items-center justify-center text-white text-xl font-bold transform hover:scale-110 transition-transform duration-300 hover:shadow-lg hover:shadow-skyfarm-blue/20">
-                    {index + 1}
+                  <div className="mb-4 overflow-hidden rounded-lg shadow-md">
+                    <img 
+                      src={item.image} 
+                      alt={item.alt}
+                      className="w-48 h-48 md:w-64 md:h-64 object-cover transition-transform hover:scale-110 duration-300"
+                    />
                   </div>
-                  <span className="mt-3 text-sm font-medium">{item}</span>
+                  <span className="font-medium text-lg">{item.name}</span>
                 </div>
               ))}
             </div>
