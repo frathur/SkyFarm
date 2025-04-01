@@ -37,7 +37,7 @@ const Solutions = () => {
   ];
 
   return (
-    <section id="solutions" className="section bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+    <section id="solutions" className="section bg-gradient-to-b from-white to-gray-300 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="leaf-1 absolute top-20 left-10 text-skyfarm-green-light/20 animate-float">

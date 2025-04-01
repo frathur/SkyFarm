@@ -1,45 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
-import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronDown } from "lucide-react";
-import { Slider } from "@/components/ui/slider";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { ChevronDown } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Hero = () => {
-  const [scroll, setScroll] = useState(0);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [currentSlide, setCurrentSlide] = useState(0);
-  const heroRef = useRef(null);
-
-  // Define background images for the hero slider
-  const backgroundImages = [
-    '/src/images/field1.jpg', // Replace with your actual image paths
-    '/src/images/field5.jpg',
-    '/src/images/field6.jpg'
-  ];
-
-  useEffect(() => {
-    const handleScroll = () => setScroll(window.scrollY);
-    const handleMouseMove = (e) => {
-      if (!heroRef.current) return;
-      const { clientX, clientY } = e;
-      const { left, top, width, height } = heroRef.current.getBoundingClientRect();
-      setMousePosition({ x: (clientX - left) / width, y: (clientY - top) / height });
-    };
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
-
-  // Auto-slide: change slide every 5 seconds
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % backgroundImages.length);
-    }, 5000);
-    return () => clearInterval(intervalId);
-  }, [backgroundImages.length]);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const featuresData = [
     {
@@ -59,110 +25,96 @@ const Hero = () => {
     }
   ];
 
-  const handleSlideChange = (value) => {
-    setCurrentSlide(value[0]);
+  useEffect(() => {
+    const startAutoSlide = () => {
+      intervalRef.current = setInterval(() => {
+        setCurrentSlide(prev => (prev + 1) % featuresData.length);
+      }, 5000);
+    };
+
+    startAutoSlide();
+    return () => intervalRef.current && clearInterval(intervalRef.current);
+  }, [featuresData.length]);
+
+  // Function to handle dot indicator clicks
+  const goToSlide = (index: number) => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    setCurrentSlide(index);
+    
+    // Restart auto-slide after manual navigation
+    intervalRef.current = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % featuresData.length);
+    }, 5000);
   };
 
   return (
-    <section 
-      id="home" 
-      ref={heroRef}
-      className="relative h-screen flex items-center justify-center overflow-hidden"
-      style={{
-        backgroundImage: `url(${backgroundImages[currentSlide]})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        transition: 'background-image 0.5s ease-in-out, transform 0.5s ease-in-out',
-        // Apply a subtle horizontal shift for a parallax effect based on current slide
-        // transform: `translateX(${currentSlide * -20}px)`
-      }}
-    >
-      {/* Gradient overlay */}
+    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+      <video className="absolute inset-0 w-full h-full object-cover" src="/src/images/video.mp4" autoPlay muted loop playsInline />
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/60 z-10"></div>
-
-      {/* Additional animated background patterns (optional) */}
-      <div className="absolute inset-0 z-0">
-        <div 
-          className="absolute inset-0 bg-gradient-to-br from-skyfarm-blue-dark/30 via-skyfarm-green-dark/20 to-skyfarm-earth/30"
-          style={{ 
-            transform: `translateY(${scroll * 0.2}px)`,
-            opacity: 1 - scroll / 1000
-          }}
-        ></div>
-      </div>
-
-      {/* Main content with hero slider */}
-      <div 
-        className="container mx-auto px-4 md:px-6 relative z-20"
-        style={{ 
-          transform: `translateY(${-scroll * 0.4}px)`,
-          opacity: 1 - scroll / 600
-        }}
-      >
+      <div className="container mx-auto px-4 md:px-6 relative z-20">
         <div className="max-w-5xl mx-auto">
           <Carousel className="w-full">
             <CarouselContent>
-              {featuresData.map((feature, index) => (
-                <CarouselItem key={index}>
-                  <div className="text-center space-y-6 p-4">
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-0 text-white animate-fade-in [text-shadow:_0_2px_8px_rgba(0,0,0,0.6)]">
-                      {feature.title}
-                    </h1>
-                    <h2 
-                      className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-skyfarm-green-light to-skyfarm-green animate-fade-in [text-shadow:_0_1px_5px_rgba(0,0,0,0.4)]" 
-                      style={{ animationDelay: "0.3s" }}
+              <AnimatePresence mode="wait">
+                <CarouselItem key={currentSlide} className="block relative">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="text-center space-y-6 p-4"
+                  >
+                    <motion.h1 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.1 }}
+                      className="text-4xl md:text-6xl lg:text-7xl font-bold text-white"
                     >
-                      {feature.highlight}
-                    </h2>
-                    <p 
-                      className="text-xl md:text-2xl mb-8 text-white/90 animate-fade-in [text-shadow:_0_1px_3px_rgba(0,0,0,0.3)] max-w-3xl mx-auto" 
-                      style={{ animationDelay: "0.6s" }}
+                      {featuresData[currentSlide].title}
+                    </motion.h1>
+                    <motion.h2 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
+                      className="text-3xl md:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-600"
                     >
-                      {feature.description}
-                    </p>
-                  </div>
+                      {featuresData[currentSlide].highlight}
+                    </motion.h2>
+                    <motion.p 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.5 }}
+                      className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto"
+                    >
+                      {featuresData[currentSlide].description}
+                    </motion.p>
+                  </motion.div>
                 </CarouselItem>
-              ))}
+              </AnimatePresence>
             </CarouselContent>
-            <div className="flex justify-center mt-4">
-              <div className="w-64">
-                <Slider 
-                  value={[currentSlide]} 
-                  max={featuresData.length - 1} 
-                  step={1} 
-                  onValueChange={handleSlideChange}
-                  className="mt-6"
-                />
-              </div>
-            </div>
-            <div className="absolute left-0 right-0 flex justify-between -mx-4 top-1/2 -translate-y-1/2">
-              <CarouselPrevious className="relative left-2" />
-              <CarouselNext className="relative right-2" />
-            </div>
           </Carousel>
-
-          <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in mt-8" style={{ animationDelay: "0.9s" }}>
-            <Button className="bg-skyfarm-green hover:bg-skyfarm-green-dark text-white px-8 py-6 text-lg group transition-all duration-300 hover:shadow-lg transform hover:-translate-y-2">
-              Learn More 
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
-            </Button>
-            <Button 
-              variant="outline" 
-              className="bg-transparent border-white text-white hover:bg-white/10 px-8 py-6 text-lg backdrop-blur-sm hover:backdrop-blur-lg transition-all duration-300 transform hover:-translate-y-2"
-            >
-              Contact Us
-            </Button>
+          
+          {/* Dots navigation instead of arrows */}
+          <div className="flex justify-center mt-8 space-x-3">
+            {featuresData.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  currentSlide === index 
+                    ? "bg-green-400 w-6" 
+                    : "bg-white/50 hover:bg-white/70"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
       </div>
-
-      {/* Scroll Indicator */}
       <div 
         className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-20 transition-opacity duration-500"
-        style={{ opacity: 1 - scroll / 200 }}
         onClick={() => {
-          const aboutSection = document.getElementById('about');
-          aboutSection?.scrollIntoView({ behavior: 'smooth' });
+          document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
         }}
       >
         <div className="flex flex-col items-center cursor-pointer hover:scale-110 transition-transform duration-300">

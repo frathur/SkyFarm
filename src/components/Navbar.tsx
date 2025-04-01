@@ -10,7 +10,7 @@ const Navbar = () => {
     { name: 'About', href: '#about' },
     { name: 'Technology', href: '#technology' },
     { name: 'Solutions', href: '#solutions' },
-    { name: 'Case Studies', href: '#case-studies' },
+    { name: 'Case Studies', href: '#research-insights' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -19,11 +19,11 @@ const Navbar = () => {
       <div className="relative mx-auto flex max-w-7xl items-center px-4 py-3 md:px-8">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <a href="#" className="flex items-center text-2xl font-bold text-skyfarm-green">
-            <img src="/src/images/SkyFarm.png" alt="SkyFarm Logo" className="h-10 w-10" />
-            <span>SkyFarm</span>
-          </a>
-        </div>
+        <a href="#" className="flex items-center text-2xl font-bold text-skyfarm-green">
+          <img src="/src/images/SkyFarm.png" alt="SkyFarm Logo" className="h-10 w-10" />
+          <span>SkyFarm</span>
+        </a>
+      </div>
 
 
         {/* Centered Navigation Links */}

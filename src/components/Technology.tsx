@@ -70,7 +70,7 @@ const Technology = () => {
   ];
 
   return (
-    <section id="technology" className="section relative overflow-hidden bg-gradient-to-b from-white to-gray-50">
+    <section id="technology" className="section relative overflow-hidden bg-gradient-to-br from-white to-green-300">
       {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="tech-circle absolute top-20 right-10 w-80 h-80 rounded-full bg-skyfarm-blue/5 blur-3xl animate-pulse-glow"></div>
@@ -85,7 +85,7 @@ const Technology = () => {
         </div>
       </div>
 
-      <div className="container mx-auto relative z-10">
+      <div className="container mx-auto relative z-10 bg-gradient-to-br from-white to-green-300">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-in">Technology & Features</h2>
           <div className="w-24 h-1 bg-skyfarm-blue mx-auto mb-6"></div>
@@ -102,16 +102,18 @@ const Technology = () => {
             diagramInView ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
           }`}
         >
-          <div className="bg-gradient-to-br from-white to-gray-50 rounded-lg p-8">
+          <div className="bg-white rounded-lg p-8">
             <h3 className="text-xl font-bold mb-8 text-center">System Architecture</h3>
             <div className="flex flex-wrap justify-center gap-8 md:gap-12 relative">
               {/* Connect lines between architecture elements */}
-              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="none">
+              {/* <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 200" preserveAspectRatio="none">
                 <line x1="100" y1="100" x2="200" y2="100" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
                 <line x1="300" y1="100" x2="400" y2="100" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
                 <line x1="500" y1="100" x2="600" y2="100" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
                 <line x1="700" y1="100" x2="800" y2="100" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
-              </svg>
+                <line x1="900" y1="100" x2="1000" y2="100" className="stroke-skyfarm-green/30" strokeWidth="2" strokeDasharray="5,5" />
+
+              </svg> */}
               
               {/* Architecture elements with staggered animations and LARGER images */}
               {architectureElements.map((item, index) => (
@@ -141,12 +143,12 @@ const Technology = () => {
         {/* Technology Features with enhanced animations */}
         <div 
           ref={techFeaturesRef}
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 "
         >
           {techFeatures.map((feature, index) => (
             <Card 
               key={index} 
-              className="hover-card border border-gray-100 shadow-sm"
+              className="hover-card border border-gray-100 shadow-sm h-full py-10"
               style={{
                 opacity: techFeaturesInView ? 1 : 0,
                 transform: techFeaturesInView ? 'translateY(0)' : 'translateY(30px)',
